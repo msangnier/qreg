@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
+# encoding: utf-8
+# Author: Maxime Sangnier
+# License: BSD
+
 """
 Quantile regression with operator-valued kernels and multi-task learning.
-
-Created on Wed Apr 13 17:16:11 2016
-
-@author: Maxime Sangnier
 """
 
 import numpy as np
 from scipy.stats import norm
 import matplotlib.pyplot as plt
-from lightning.regression import QRegressor, QRegMTL, toy_data
+from qreg import QRegressor, QRegMTL, toy_data
 
 
 if __name__ == '__main__':

@@ -1,21 +1,19 @@
-# -*- coding: utf-8 -*-
+# encoding: utf-8
+# Author: Maxime Sangnier
+# License: BSD
+
 """
 Example of how to use the Quantile Regression toolbox with epsilon-insensitive loss (comparison of algorithms).
-
-Created on Wed Jan 13 13:44:46 2016
-
-@author: Maxime Sangnier
 """
 
 import numpy as np
 from scipy.stats import norm
 import matplotlib.pyplot as plt
-from lightning.regression import QRegressor, toy_data
+from qreg import QRegressor, toy_data
 
 
 if __name__ == '__main__':
     probs = np.linspace(0.1, 0.9, 5)  # Joint quantile regression
-    # probs = [0.5]  # Single quantile regression
     eps = 0.25*len(probs)  # Threshold for epsilon-loss
     algorithms = ['qp', 'sdca', 'qp-eps', 'coneqp-eps', 'sdca-eps']  # Algorithms to compare
 
@@ -41,9 +39,9 @@ if __name__ == '__main__':
         plt.subplot(1, len(algorithms), it+1)
         plt.plot(x_train, y_train, '.')
         for q in pred:
-           plt.plot(x_test, q, '-')
+            plt.plot(x_test, q, '-')
         for q in z_test:
-           plt.plot(x_test, q, '--')
+            plt.plot(x_test, q, '--')
         plt.title(alg.upper())
 
         # Print the optimal objective value
@@ -51,7 +49,7 @@ if __name__ == '__main__':
         print("   objective value: %f" % reg.obj)
         print("   training time: %0.2fs" % reg.time)
         # Print number of support vectors
-        print("   #SV : %d" % reg.num_sv())
+        print("   #SV: %d" % reg.num_sv())
 
         # Save optimal objectives and coefficients
         res.append((reg.obj, reg.coefs))

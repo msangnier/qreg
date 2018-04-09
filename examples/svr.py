@@ -1,16 +1,16 @@
+# encoding: utf-8
+# Author: Maxime Sangnier
+# License: BSD
+
 """
 Quantile regression with epsilon-insensitive loss (comparison to SVR).
-
-Created on Fri July 14 15:12:26 2017
-
-@author: Maxime Sangnier
 """
 
 import numpy as np
 from scipy.stats import norm
 from scipy.spatial.distance import pdist, squareform
 import matplotlib.pyplot as plt
-from lightning.regression import QRegressor,toy_data
+from qreg import QRegressor, toy_data
 from sklearn.svm import SVR
 
 
