@@ -862,7 +862,7 @@ class QRegMTL(BaseEstimator):
 
         location: whether to use a location model (as proposed in the paper)
         gamma_in: gamma parameter for the input RBF map
-        n_landmarks: number of landmakrs for the input mapping. When None,
+        n_landmarks: number of landmarks for the input mapping. When None,
             use all training points. When less than 1, consider it as a ratio
             of training points. Else it indicates the number of landmarks.
         C_reg: cost parameter for the ridge regression (location model).
