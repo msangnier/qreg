@@ -37,7 +37,7 @@ if __name__ == '__main__':
     plt.title('Operator-valued kernel')
 
     # QR with multi-task learning
-    mtl = QRegMTL(C=1e2, probs=probs, n_landmarks=0.2)
+    mtl = QRegMTL(C=1e2, probs=probs, n_landmarks=0.2, Creg=1e-12)
 
     # Fit on training data and predict on test data
     print("Learn QRegMTL (with location)")
