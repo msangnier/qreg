@@ -865,7 +865,7 @@ class QRegMTL(BaseEstimator):
         n_landmarks: number of landmarks for the input mapping. When None,
             use all training points. When less than 1, consider it as a ratio
             of training points. Else it indicates the number of landmarks.
-        C_reg: cost parameter for the ridge regression (location model).
+        Creg: cost parameter for the ridge regression (location model).
             Positive scalar. When it is None, use least-square regression.
         C: cost parameter (upper bound of dual variables). Positive scalar.
         probs: probabilities (quantiles levels)
