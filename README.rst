@@ -79,3 +79,10 @@ Authors
 -------
 
 Olivier Fercoq and Maxime Sangnier
+
+References
+----------
+
+- Data sparse nonparametric regression with epsilon-insensitive losses (2017), M. Sangnier, O. Fercoq, F. d'Alché-Buc. Asian Conference on Machine Learning (ACML).
+- Joint quantile regression in vector-valued RKHSs (2016), M. Sangnier, O. Fercoq, F. d'Alché-Buc. Neural Information Processing Systems (NIPS).
+
