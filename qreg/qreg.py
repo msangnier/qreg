@@ -1,6 +1,7 @@
 # encoding: utf-8
 # Author: Maxime Sangnier
 # License: BSD
+import sys 
 
 import numpy as np
 import scipy.spatial.distance as dist
@@ -18,6 +19,13 @@ from .sdca_qr_al_fast import _prox_sdca_al_fit
 
 import time
 import warnings
+
+# time.clock() has been removed in Python 3.8+
+# See: https://docs.python.org/3/whatsnew/3.8.html#api-and-feature-removals
+if sys.version_info >= (3,8):
+    get_time = time.perf_counter
+else:
+    get_time = time.clock
 
 
 def toy_data(n=50, t_min=0., t_max=1.5, noise=1., probs=[0.5]):
@@ -390,9 +398,9 @@ class QRegressor(BaseEstimator):
         solvers.options['show_progress'] = self.verbose
         if self.tol > 0:
             solvers.options['reltol'] = self.tol
-        self.time = time.clock()  # Store beginning time
+        self.time = get_time()  # Store beginning time
         sol = solvers.qp(K, q, G, h, A, b)  # Solve the dual opt. problem
-        self.time = time.clock() - self.time  # Store training time
+        self.time = get_time() - self.time  # Store training time
 
         # Set coefs
         self.coefs = np.reshape(sol['x'][:n], (m, p)).T
@@ -429,9 +437,9 @@ class QRegressor(BaseEstimator):
         solvers.options['show_progress'] = self.verbose
         if self.tol > 0:
             solvers.options['reltol'] = self.tol
-        self.time = time.clock()  # Store beginning time
+        self.time = get_time()  # Store beginning time
         sol = solvers.qp(K, q, G, h, A, b)  # Solve the dual opt. problem
-        self.time = time.clock() - self.time  # Store training time
+        self.time = get_time() - self.time  # Store training time
 
         # Set coefs
         self.coefs = np.reshape(sol['x'][:n], (m, p)).T
@@ -457,9 +465,9 @@ class QRegressor(BaseEstimator):
         if self.tol > 0:
             solvers.options['reltol'] = self.tol
 #            solvers.options['feastol'] = self.tol * 1./10
-        self.time = time.clock()  # Store beginning time
+        self.time = get_time()  # Store beginning time
         sol = solvers.qp(K, q, G, h, A, b)  # Solve the dual opt. problem
-        self.time = time.clock() - self.time  # Store training time
+        self.time = get_time() - self.time  # Store training time
 
         # Set coefs
         self.coefs = np.reshape(sol['x'], (n//p, p)).T
@@ -496,7 +504,7 @@ class QRegressor(BaseEstimator):
             solvers.options['reltol'] = self.tol
 #            solvers.options['feastol'] = self.tol * 1./10
 
-        self.time = time.clock()  # Store beginning time
+        self.time = get_time()  # Store beginning time
         if self.eps == 0:
             K = matrix(K)  # Quadratic part of the objective
             sol = solvers.qp(K, q, G, h, A, b, initvals=initvals)  # Solve the dual opt. problem
@@ -524,7 +532,7 @@ class QRegressor(BaseEstimator):
 #                initvals = sol['x']
                 mu = np.linalg.norm(coefs, axis=0)
                 mu[mu < 1e-32] = 1e-32
-        self.time = time.clock() - self.time  # Store training time
+        self.time = get_time() - self.time  # Store training time
 
         # Set coefs
         self.coefs = coefs
@@ -547,7 +555,7 @@ class QRegressor(BaseEstimator):
             solvers.options['reltol'] = self.tol
 #            solvers.options['feastol'] = self.tol * 1./10
 
-        self.time = time.clock()  # Store beginning time
+        self.time = get_time()  # Store beginning time
         if self.eps == 0:
             K = matrix(K)  # Quadratic part of the objective
             q = matrix(-np.kron(y, np.ones(p)))  # Linear part of the objective
@@ -587,7 +595,7 @@ class QRegressor(BaseEstimator):
 
             sol = solvers.coneqp(K, q, G, h, dims, A, b, initvals=initvals)  # Solve the dual opt. problem
             coefs = np.reshape(sol['x'][:n], (m, p)).T
-        self.time = time.clock() - self.time  # Store training time
+        self.time = get_time() - self.time  # Store training time
 
         # Set coefs
         self.coefs = coefs
@@ -631,7 +639,7 @@ class QRegressor(BaseEstimator):
         status = np.zeros(1, dtype=np.int16)
 
         # Call to the solver
-        self.time = time.clock()  # Store beginning time
+        self.time = get_time()  # Store beginning time
         _prox_sdca_intercept_fit(self, dsin, dsout, y, self.coefs, self.alpha,
                                  self.C, self.eps, self.stepsize_factor,
                                  self.probs, self.max_iter, self.tol,
@@ -640,7 +648,7 @@ class QRegressor(BaseEstimator):
                                  self.verbose, rng, status, self.active_set,
                                  Kout_lambda_max)
 #                                , inner_obj)
-        self.time = time.clock() - self.time  # Store training time
+        self.time = get_time() - self.time  # Store training time
 
         # Set coefs
         self.coefs = np.reshape(self.coefs, (n_samples, n_dim)).T
@@ -699,7 +707,7 @@ class QRegressor(BaseEstimator):
 
 #        dual_tol = np.sqrt(n) * self.C * self.dual_tol  # Inner loop
         # Loop
-        self.time = time.clock()  # Store beginning time
+        self.time = get_time()  # Store beginning time
         for ito in range(self.max_iter):
             _prox_sdca_al_fit(self, dsin, dsout, y, coefs, self.alpha,
                               self.C, self.stepsize_factor, self.probs, b, mu,
@@ -740,7 +748,7 @@ class QRegressor(BaseEstimator):
                     break
 
             # Maximum training time
-            current_time = time.clock() - self.time  # Current training time
+            current_time = get_time() - self.time  # Current training time
             if current_time > self.al_max_time:
                 if self.verbose:
                     print("Maximum training time reached")
@@ -749,7 +757,7 @@ class QRegressor(BaseEstimator):
             if self.verbose:
                 print('Did not converge after {} iterations.'.format(ito+1))
 
-        self.time = time.clock() - self.time  # Store training time
+        self.time = get_time() - self.time  # Store training time
 
         # Set coefs
         self.coefs = np.reshape(coefs, (n_samples, n_dim)).T
@@ -771,7 +779,7 @@ class QRegressor(BaseEstimator):
         self.D = np.eye(d) / d  # Initialize D
         err = np.inf
 
-        self.time = time.clock()  # Store beginning time
+        self.time = get_time()  # Store beginning time
         for it in range(self.max_iter):
             Kin = np.dot(self.X, self.D.dot(self.X.T))  # Compute input kernel
             self.qp(np.kron(Kin, np.eye(p)), y)  # Solve QR problem (fixed D)
@@ -808,7 +816,7 @@ class QRegressor(BaseEstimator):
             if verbose:
                 print('Did not converge after {} iterations.'.format(it+1))
 
-        self.time = time.clock() - self.time  # Store training time
+        self.time = get_time() - self.time  # Store training time
         self.verbose = verbose
 
     def pinball_loss(self, pred, y):
