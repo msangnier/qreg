@@ -1,6 +1,7 @@
 # encoding: utf-8
 # Author: Maxime Sangnier
 # License: BSD
+import sys 
 
 import numpy as np
 import scipy.spatial.distance as dist
@@ -18,6 +19,13 @@ from .sdca_qr_al_fast import _prox_sdca_al_fit
 
 import time
 import warnings
+
+# time.clock() has been removed in Python 3.8+
+# See: https://docs.python.org/3/whatsnew/3.8.html#api-and-feature-removals
+#if sys.version_info >= (3,8):
+#    get_time = time.perf_counter
+#else:
+#    get_time = time.clock
 
 
 def toy_data(n=50, t_min=0., t_max=1.5, noise=1., probs=[0.5]):
@@ -461,6 +469,7 @@ class QRegressor(BaseEstimator):
         sol = solvers.qp(K, q, G, h, A, b)  # Solve the dual opt. problem
         self.time = time.process_time() - self.time  # Store training time
 
+
         # Set coefs
         self.coefs = np.reshape(sol['x'], (n//p, p)).T
         self.sol = sol
@@ -733,7 +742,7 @@ class QRegressor(BaseEstimator):
                 if self.verbose:
                     print("it: %d   obj: %0.2f" % (ito, obj))
 
-                # Stopping criterion
+                # Stopping criterionperformance.
                 if obj <= self.tol:
                     if self.verbose:
                         print("Ground truth objective value reached.")
@@ -770,7 +779,7 @@ class QRegressor(BaseEstimator):
 
         self.D = np.eye(d) / d  # Initialize D
         err = np.inf
-
+        
         self.time = time.process_time()  # Store beginning time
         for it in range(self.max_iter):
             Kin = np.dot(self.X, self.D.dot(self.X.T))  # Compute input kernel
